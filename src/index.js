@@ -1,34 +1,24 @@
-// npm i lodash.debounce
-//  npm i notiflix
-
 import './css/styles.css';
 import debounce from '../node_modules/lodash.debounce';
 import { Notify } from '../node_modules/notiflix';
 import { fetchCountries } from './templateFunctions/fetchCountries';
+import { getRefs } from './templateFunctions/getRefs';
 
 const DEBOUNCE_DELAY = 300;
 
-console.log('anything!!!!!!!!!');
-
-const input = document.getElementById('search-box');
-const countryList = document.querySelector('.country-list');
-const countryInfo = document.querySelector('.country-info');
-
-console.log(input);
-
-console.log(debounce);
+const refs = getRefs();
 
 function cleanMarkup(ref) {
   ref.innerHTML = '';
 }
 
-function inputHandler(e) {
-  const textInput = e.target.value.trim();
+function inputHandler(evt) {
+  const textInput = evt.target.value.trim();
   console.log(textInput);
 
   if (!textInput) {
-    cleanMarkup(countryList);
-    cleanMarkup(countryInfo);
+    cleanMarkup(refs.countryList);
+    cleanMarkup(refs.countryInfo);
     return;
   }
 
@@ -43,22 +33,22 @@ function inputHandler(e) {
       }
       renderMarkup(data);
     })
-    .catch(err => {
-      cleanMarkup(countryList);
-      cleanMarkup(countryInfo);
+    .catch(error => {
+      cleanMarkup(refs.countryList);
+      cleanMarkup(refs.countryInfo);
       Notify.failure('Oops, there is no country with that name');
     });
 }
 
 function renderMarkup(data) {
   if (data.length === 1) {
-    cleanMarkup(listEl);
+    cleanMarkup(refs.countryList);
     const markupInfo = createInfoMarkup(data);
-    countryInfo.innerHTML = markupInfo;
+    refs.countryInfo.innerHTML = markupInfo;
   } else {
-    cleanMarkup(countryInfo);
+    cleanMarkup(refs.countryInfo);
     const markupList = createListMarkup(data);
-    countryList.innerHTML = markupList;
+    refs.countryList.innerHTML = markupList;
   }
 }
 
@@ -88,4 +78,4 @@ function createInfoMarkup(data) {
   );
 }
 
-input.addEventListener('input', debounce(inputHandler, DEBOUNCE_DELAY));
+refs.input.addEventListener('input', debounce(inputHandler, DEBOUNCE_DELAY));
